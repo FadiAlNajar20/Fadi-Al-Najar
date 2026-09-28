@@ -1,0 +1,478 @@
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
+@import "@fontsource-variable/readex-pro/wght.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-zinc-300 antialiased;
+  }
+
+  /* Arabic text uses Readex Pro and Latin words inside it keep Plus Jakarta Sans. Only the Arabic page
+     lists Readex Pro, so the English page never downloads it. */
+  html[lang="ar"] body {
+    @apply font-arabic;
+    line-height: 1.7;
+  }
+
+  ::selection {
+    @apply bg-brand text-brand-ink;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.brand.DEFAULT");
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Avoids a single word on the last line of body text, where supported. */
+  p,
+  li,
+  dd,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  section[id],
+  article[id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@layer components {
+  /* Type scale shared by every section. Arabic adjustments are at the end of this file. */
+  .eyebrow {
+    @apply text-[0.8125rem] font-semibold uppercase tracking-[0.14em] text-brand sm:text-sm;
+  }
+
+  .heading-1 {
+    @apply text-[2.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-white xs:text-[2.6rem] sm:text-5xl lg:text-[3.35rem] xl:text-[3.6rem];
+  }
+
+  .heading-2 {
+    @apply text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12];
+  }
+
+  .heading-3 {
+    @apply text-[1.3125rem] font-bold leading-snug tracking-[-0.015em] text-white sm:text-2xl;
+  }
+
+  .heading-4 {
+    @apply text-lg font-bold leading-snug tracking-[-0.01em] text-white sm:text-[1.1875rem];
+  }
+
+  .text-lead {
+    @apply text-[1.0625rem] leading-relaxed text-zinc-400 sm:text-lg;
+  }
+
+  .btn {
+    @apply inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-6 text-[0.95rem] font-semibold;
+  }
+
+  .btn-sm {
+    @apply min-h-[40px] px-4 text-sm;
+  }
+
+  .btn-lg {
+    @apply min-h-[56px] px-8 text-base;
+  }
+
+  .btn-primary {
+    @apply bg-brand text-brand-ink hover:bg-brand-hover;
+  }
+
+  .btn-secondary {
+    @apply border border-white/[0.15] text-white hover:border-white/30 hover:bg-white/[0.04];
+  }
+
+  .btn-whatsapp {
+    @apply bg-[#25d366] text-[#04220f] hover:bg-[#40df7d];
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-1.5 rounded font-semibold text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-brand;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-[0.8125rem] font-semibold leading-5 ring-1 ring-inset;
+  }
+
+  .skip-link {
+    @apply fixed start-4 top-3 z-50 -translate-y-20 rounded-md bg-white px-4 py-2 text-sm font-semibold text-ink-950 transition-transform focus:translate-y-0;
+  }
+}
+
+/* Arabic: no uppercase or letter-spacing (letter-spacing breaks the joins between Arabic letters), and
+   taller line-heights for the script's ascenders and descenders. */
+html[lang="ar"] .eyebrow {
+  font-size: 0.9375rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+html[lang="ar"] .heading-1,
+html[lang="ar"] .heading-2,
+html[lang="ar"] .heading-3,
+html[lang="ar"] .heading-4 {
+  letter-spacing: 0;
+}
+
+/* Arabic glyphs in Readex Pro Bold read larger and heavier than Latin at the same size, so the two
+   largest headings step down slightly. */
+html[lang="ar"] .heading-1 {
+  line-height: 1.32;
+}
+
+html[lang="ar"] .heading-2 {
+  font-size: 1.8125rem;
+  line-height: 1.38;
+}
+
+@media (min-width: 450px) {
+  html[lang="ar"] .heading-1 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 640px) {
+  html[lang="ar"] .heading-1 {
+    font-size: 2.75rem;
+  }
+
+  html[lang="ar"] .heading-2 {
+    font-size: 2.125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  html[lang="ar"] .heading-1 {
+    font-size: 2.875rem;
+  }
+
+  html[lang="ar"] .heading-2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  html[lang="ar"] .heading-1 {
+    font-size: 3.125rem;
+  }
+}
+
+html[lang="ar"] .heading-3,
+html[lang="ar"] .heading-4,
+html[lang="ar"] .leading-snug {
+  line-height: 1.55;
+}
+
+html[lang="ar"] .leading-relaxed,
+html[lang="ar"] .text-lead {
+  line-height: 1.85;
+}
+
+html[lang="ar"] .btn {
+  font-size: 1rem;
+}
+
+html[lang="ar"] .btn-sm {
+  font-size: 0.9375rem;
+}
+
+html[lang="ar"] .btn-lg {
+  font-size: 1.0625rem;
+}
+
+/* The closing call to action gets a slightly larger headline than other sections. */
+@media (min-width: 1024px) {
+  .heading-cta {
+    font-size: 3.25rem;
+  }
+
+  html[lang="ar"] .heading-cta {
+    font-size: 2.875rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Motion
+   Only transform and opacity move, every entrance runs once, nothing loops, and
+   prefers-reduced-motion switches it all off (end of this file). Entrances use an ease-out cubic
+   curve, so the movement stays visible for most of its duration instead of finishing in the first
+   frames; hovers use the snappier --ease-out.
+   --------------------------------------------------------------------------------------------- */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-enter: cubic-bezier(0.33, 1, 0.68, 1);
+  --motion-fast: 220ms;
+  --motion-hover: 300ms;
+  --motion-base: 450ms;
+  --motion-enter: 700ms;
+  /* Entrance distances: hero text and screenshot, then sections as they scroll in. */
+  --hero-y: 28px;
+  --hero-x: 36px;
+  --enter-y: 36px;
+  --enter-x: 32px;
+  /* +1 in left-to-right text and -1 in right-to-left, so sideways movement follows the reading direction. */
+  --dir: 1;
+  --inline-start: left;
+}
+
+/* Phones travel a little less. */
+@media (max-width: 639px) {
+  :root {
+    --hero-y: 22px;
+    --hero-x: 20px;
+    --enter-y: 28px;
+    --enter-x: 22px;
+  }
+}
+
+[dir="rtl"] {
+  --dir: -1;
+  --inline-start: right;
+}
+
+[dir="ltr"] {
+  --dir: 1;
+  --inline-start: left;
+}
+
+/* Page load: the hero text rises in line by line (delays are set in Hero.jsx) while the screenshot
+   slides in from the outer edge. Pure CSS, so it plays before and without JavaScript. Every entrance
+   is fully opaque before it has finished moving: text is readable early and keeps gliding into place. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--hero-y), 0);
+  }
+
+  45% {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-media-in {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--hero-x) * var(--dir)), 0, 0) scale(0.97);
+  }
+
+  40% {
+    opacity: 1;
+  }
+}
+
+.hero-in {
+  animation: hero-in 650ms var(--ease-enter) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+.hero-media-in {
+  animation: hero-media-in 900ms var(--ease-enter) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Scroll entrances (see useReveal): elements below the fold are hidden once JavaScript runs, then
+   enter as they reach the viewport, staggered through --reveal-delay. They rise by default;
+   "start"/"end" come in from that side of the reading direction, "media" also grows slightly and
+   "panel" rises and grows. A reveal inside another one travels less, so it settles just after its
+   container. The animation only fills "backwards", so hover transforms work once it has finished. */
+[data-reveal] {
+  --enter-from: translate3d(0, var(--enter-y), 0);
+}
+
+[data-reveal] [data-reveal] {
+  --enter-y: 20px;
+}
+
+[data-reveal="start"] {
+  --enter-from: translate3d(calc(var(--enter-x) * -1 * var(--dir)), 0, 0);
+}
+
+[data-reveal="end"] {
+  --enter-from: translate3d(calc(var(--enter-x) * var(--dir)), 0, 0);
+}
+
+[data-reveal="media"] {
+  --enter-from: translate3d(0, 24px, 0) scale(0.97);
+}
+
+[data-reveal="panel"] {
+  --enter-from: translate3d(0, var(--enter-y), 0) scale(0.98);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: var(--enter-from);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.reveal-pending {
+  opacity: 0;
+}
+
+.reveal-in {
+  animation: reveal var(--motion-enter) var(--ease-enter) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+.btn {
+  transition:
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-hover) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+/* Desktop navigation: an underline that grows from the start of the reading direction. */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.75rem;
+  bottom: 0.35rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+  transform: scaleX(0);
+  transform-origin: var(--inline-start);
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Hover movement only where there is a real pointer and motion is welcome. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Cards lift slightly and their border brightens; a service card's icon warms up. */
+  .lift,
+  .project {
+    transition:
+      transform var(--motion-hover) var(--ease-out),
+      border-color var(--motion-hover) var(--ease-out);
+  }
+
+  .lift:hover,
+  .project:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 255 255 / 0.16);
+  }
+
+  .service-icon {
+    transition: background-color var(--motion-hover) var(--ease-out);
+  }
+
+  .lift:hover .service-icon {
+    background-color: rgb(255 74 63 / 0.18);
+  }
+
+  /* Project screenshots zoom in slightly inside their frames. */
+  .media-shot {
+    transition: transform var(--motion-hover) var(--ease-out);
+  }
+
+  .project:hover .media-shot {
+    transform: scale(1.02);
+  }
+
+  /* The large contact buttons rise a little and glow. */
+  .btn-lg:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-whatsapp:hover {
+    box-shadow: 0 14px 30px -14px rgb(37 211 102 / 0.65);
+  }
+
+  .btn-secondary.btn-lg:hover {
+    box-shadow: 0 14px 30px -18px rgb(255 255 255 / 0.3);
+  }
+
+  /* Icons nudge the way they point. `translate` adds to the right-to-left flip instead of replacing it. */
+  .nudge {
+    transition: translate var(--motion-fast) var(--ease-out);
+  }
+
+  :hover > .nudge-forward {
+    translate: calc(3px * var(--dir)) 0;
+  }
+
+  :hover > .nudge-out {
+    translate: calc(2px * var(--dir)) -2px;
+  }
+
+  :hover > .nudge-up {
+    translate: 0 -2px;
+  }
+}
+
+/* Pressing a button gives feedback on every device, touch screens included. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Switching language loads the other page; supporting browsers cross-fade between the two. */
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+/* Content waiting for its entrance still prints. */
+@media print {
+  .reveal-pending {
+    opacity: 1 !important;
+  }
+}
+
+/* Reduced motion: no entrances, reveals, hover movement or smooth scrolling; everything shows at once. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .hero-in,
+  .hero-media-in,
+  .reveal-in {
+    animation: none !important;
+  }
+
+  .reveal-pending {
+    opacity: 1;
+  }
+}

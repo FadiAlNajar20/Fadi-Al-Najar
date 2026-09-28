@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portfolio-umber-nine-67.vercel.app/sitemap.xml
