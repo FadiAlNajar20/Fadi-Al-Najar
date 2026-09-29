@@ -1,15 +1,22 @@
 import { useMemo, useState } from "react";
 
-import { About, Contact, Footer, Hero, Navbar, Process, Services, WhatsAppButton, Works } from "./components";
+import { About, CapabilityStrip, Contact, Footer, Hero, Navbar, Process, Services, WhatsAppButton, Works } from "./components";
 import useReveal from "./hooks/useReveal";
 import Hotjar from "./Hotjar";
 import { I18nProvider } from "./i18n";
 import { locales } from "./i18n/config";
+import useLocaleState from "./i18n/useLocaleState";
 
-const App = ({ locale, messages }) => {
+// `locale` and `messages` are the language of the page that was loaded; the visitor can then switch
+// language in place (see useLocaleState).
+const App = ({ locale: initialLocale, messages: initialMessages }) => {
+  const { locale, messages, setLocale } = useLocaleState(initialLocale, initialMessages);
   // Chosen from a service card; tailors the pre-filled WhatsApp message.
   const [projectType, setProjectType] = useState("");
-  const i18n = useMemo(() => ({ locale, dir: locales[locale].dir, t: messages }), [locale, messages]);
+  const i18n = useMemo(
+    () => ({ locale, dir: locales[locale].dir, t: messages, setLocale }),
+    [locale, messages, setLocale]
+  );
   useReveal();
 
   return (
@@ -20,6 +27,7 @@ const App = ({ locale, messages }) => {
       <Navbar />
       <main id="main" tabIndex={-1} className="focus:outline-none">
         <Hero />
+        <CapabilityStrip />
         <Works />
         <Services onSelectProject={setProjectType} />
         <Process />

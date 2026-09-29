@@ -5,30 +5,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------------------------
+   Color
+   A white-first palette. Every value is written as RGB channels so Tailwind can add opacity
+   (bg-brand/10); tailwind.config.cjs maps them to page / surface / fg / line / brand / accent.
+   Dark values are for text, icons and small details only, never for section backgrounds.
+   --------------------------------------------------------------------------------------------- */
+:root {
+  --page: 255 255 255; /* #FFFFFF */
+  --surface: 255 255 255; /* cards */
+  --surface-neutral: 247 248 250; /* #F7F8FA */
+  --surface-warm: 250 248 246; /* #FAF8F6 */
+  --surface-cool: 238 244 255; /* #EEF4FF */
+  --surface-green: 239 250 244; /* #EFFAF4 */
+  --surface-tint: 255 247 245; /* #FFF7F5: soft accent surface (featured screenshot, contact panel) */
+  --surface-soft: 250 250 248; /* #FAFAF8: soft neutral band */
+
+  --text-primary: 17 17 17; /* #111111 */
+  --text-body: 79 85 93; /* #4F555D */
+  --text-secondary: 96 100 108; /* #60646C */
+  --text-muted: 107 112 121; /* #6B7079: the lightest gray that still reads at 4.5:1 on every surface */
+
+  --border: 232 233 236; /* #E8E9EC */
+  --border-strong: 218 221 225; /* #DADDE1 */
+
+  --brand: 255 74 63; /* #FF4A3F: marks, decorations, large accent text */
+  --brand-hover: 233 67 57; /* #E94339 */
+  --brand-soft: 255 242 240; /* #FFF2F0 */
+  --brand-fill: 214 58 48; /* #D63A30: filled buttons, white text at 4.66:1 */
+  --brand-fill-hover: 201 55 45; /* #C9372D */
+  --brand-text: 200 52 42; /* #C8342A: coral text, icons and focus rings */
+  --cool: 80 130 255; /* ambient blue, decoration only */
+
+  --whatsapp: 21 128 61; /* #15803D, white text at 5.02:1 */
+  --whatsapp-hover: 22 101 52; /* #166534 */
+
+  --shadow-card: 0 1px 2px rgb(17 17 17 / 0.04), 0 10px 30px -18px rgb(17 17 17 / 0.12);
+  --shadow-card-hover: 0 2px 4px rgb(17 17 17 / 0.04), 0 22px 44px -22px rgb(17 17 17 / 0.2);
+  --shadow-frame: 0 2px 6px rgb(17 17 17 / 0.05), 0 28px 60px -30px rgb(17 17 17 / 0.32);
+  --shadow-float: 0 1px 2px rgb(17 17 17 / 0.05), 0 12px 28px -12px rgb(17 17 17 / 0.18);
+
+  color-scheme: light;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    color-scheme: dark;
   }
 
   body {
-    @apply bg-ink-950 font-sans text-zinc-300 antialiased;
+    @apply bg-page font-sans text-fg-body antialiased;
   }
 
-  /* Arabic text uses Readex Pro and Latin words inside it keep Plus Jakarta Sans. Only the Arabic page
-     lists Readex Pro, so the English page never downloads it. */
+  /* Arabic text uses Readex Pro and Latin words inside it keep Plus Jakarta Sans. Only Arabic text uses
+     Readex Pro, so an English visit never downloads it unless the visitor switches to Arabic. */
   html[lang="ar"] body {
     @apply font-arabic;
     line-height: 1.7;
   }
 
   ::selection {
-    @apply bg-brand text-brand-ink;
+    @apply bg-brand/20 text-fg;
   }
 
   :focus-visible {
-    outline: 2px solid theme("colors.brand.DEFAULT");
+    outline: 2px solid rgb(var(--brand-text));
     outline-offset: 3px;
   }
 
@@ -54,64 +96,140 @@
 
 @layer components {
   /* Type scale shared by every section. Arabic adjustments are at the end of this file. */
+
+  /* Section label: a small pill with a coral dot. */
   .eyebrow {
-    @apply text-[0.8125rem] font-semibold uppercase tracking-[0.14em] text-brand sm:text-sm;
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[0.8125rem] font-semibold uppercase leading-5 tracking-[0.12em] text-accent sm:text-sm;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply h-1.5 w-1.5 shrink-0 rounded-full bg-brand;
+  }
+
+  /* A calmer label for centered headings: smaller, lighter, gray text; only the dot stays coral. */
+  .eyebrow-quiet {
+    @apply gap-1.5 bg-transparent px-3 py-1 text-xs font-medium tracking-[0.16em] text-fg-secondary sm:text-[0.8125rem];
   }
 
   .heading-1 {
-    @apply text-[2.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-white xs:text-[2.6rem] sm:text-5xl lg:text-[3.35rem] xl:text-[3.6rem];
+    @apply text-[2.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-fg xs:text-[2.6rem] sm:text-5xl lg:text-[3.35rem] xl:text-[3.75rem];
   }
 
   .heading-2 {
-    @apply text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12];
+    @apply text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] text-fg sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12];
   }
 
   .heading-3 {
-    @apply text-[1.3125rem] font-bold leading-snug tracking-[-0.015em] text-white sm:text-2xl;
+    @apply text-[1.3125rem] font-bold leading-snug tracking-[-0.015em] text-fg sm:text-2xl;
   }
 
   .heading-4 {
-    @apply text-lg font-bold leading-snug tracking-[-0.01em] text-white sm:text-[1.1875rem];
+    @apply text-lg font-bold leading-snug tracking-[-0.01em] text-fg sm:text-[1.1875rem];
   }
 
   .text-lead {
-    @apply text-[1.0625rem] leading-relaxed text-zinc-400 sm:text-lg;
+    @apply text-[1.0625rem] leading-relaxed text-fg-secondary sm:text-lg;
   }
 
   .btn {
-    @apply inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-6 text-[0.95rem] font-semibold;
+    @apply inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-6 text-[0.95rem] font-semibold;
   }
 
   .btn-sm {
-    @apply min-h-[40px] px-4 text-sm;
+    @apply min-h-[40px] rounded-lg px-4 text-sm;
   }
 
   .btn-lg {
     @apply min-h-[56px] px-8 text-base;
   }
 
+  /* Buttons: coral fill for the main action, white outline for the second one, green for WhatsApp. */
   .btn-primary {
-    @apply bg-brand text-brand-ink hover:bg-brand-hover;
+    @apply bg-brand-fill text-white shadow-[0_8px_20px_-10px_rgb(var(--brand-fill)/0.6)] hover:bg-brand-fill-hover;
   }
 
   .btn-secondary {
-    @apply border border-white/[0.15] text-white hover:border-white/30 hover:bg-white/[0.04];
+    @apply border border-line-strong bg-surface text-fg hover:border-fg/25 hover:bg-surface-muted;
   }
 
   .btn-whatsapp {
-    @apply bg-[#25d366] text-[#04220f] hover:bg-[#40df7d];
+    @apply bg-whatsapp text-white shadow-[0_8px_20px_-10px_rgb(var(--whatsapp)/0.6)] hover:bg-whatsapp-hover;
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    @apply pointer-events-none cursor-not-allowed opacity-50 shadow-none;
   }
 
   .text-link {
-    @apply inline-flex items-center gap-1.5 rounded font-semibold text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-brand;
+    @apply inline-flex items-center gap-1.5 rounded font-semibold text-fg underline decoration-brand/40 decoration-2 underline-offset-[5px] transition-colors hover:text-accent hover:decoration-brand;
   }
 
   .badge {
     @apply inline-flex items-center rounded-full px-3 py-1 text-[0.8125rem] font-semibold leading-5 ring-1 ring-inset;
   }
 
+  /* Coral label for "featured" items and a neutral one for everything else. */
+  .badge-brand {
+    @apply bg-brand-soft text-accent ring-brand/25;
+  }
+
+  .badge-neutral {
+    @apply bg-surface-muted text-fg-body ring-line;
+  }
+
+  /* Small tag for tools and technologies. */
+  .chip {
+    @apply inline-flex items-center rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium text-fg-body transition-colors hover:border-brand/40 hover:text-fg;
+  }
+
   .skip-link {
-    @apply fixed start-4 top-3 z-50 -translate-y-20 rounded-md bg-white px-4 py-2 text-sm font-semibold text-ink-950 transition-transform focus:translate-y-0;
+    @apply fixed start-4 top-3 z-50 -translate-y-20 rounded-md bg-fg px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0;
+  }
+
+  /* Faint dotted texture for decorative panels. */
+  .dot-grid {
+    background-image: radial-gradient(rgb(var(--text-primary) / 0.14) 1px, transparent 1.2px);
+    background-size: 18px 18px;
+  }
+
+  /* Process: numbered steps, each centred in its own column, joined by a line that runs in the reading
+     direction. One column on phones (short line down the middle, between steps), 2x2 on tablets (no
+     line, since the order runs across rows) and one row from lg up. */
+  .timeline-step {
+    position: relative;
+  }
+
+  /* A short dashed coral segment in the gap below each step, leading down to the next circle. */
+  .timeline-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: calc(50% - 1px);
+    top: calc(100% + 0.75rem);
+    height: 1.5rem;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, rgb(var(--brand) / 0.45) 0 6px, transparent 6px 12px);
+  }
+
+  @media (min-width: 640px) {
+    .timeline-step:not(:last-child)::after {
+      display: none;
+    }
+  }
+
+  /* Centre of one circle to the centre of the next; the circles sit on top and their ring clears the
+     line around them. */
+  @media (min-width: 1024px) {
+    .timeline-step:not(:last-child)::after {
+      display: block;
+      inset-inline-start: 50%;
+      inset-inline-end: -50%;
+      top: calc(1.75rem - 1px);
+      width: auto;
+      height: 2px;
+      background: repeating-linear-gradient(to var(--inline-end), rgb(var(--brand) / 0.45) 0 6px, transparent 6px 12px);
+    }
   }
 }
 
@@ -121,6 +239,10 @@ html[lang="ar"] .eyebrow {
   font-size: 0.9375rem;
   text-transform: none;
   letter-spacing: 0;
+}
+
+html[lang="ar"] .eyebrow-quiet {
+  font-size: 0.875rem;
 }
 
 html[lang="ar"] .heading-1,
@@ -209,10 +331,11 @@ html[lang="ar"] .btn-lg {
 
 /* ---------------------------------------------------------------------------------------------
    Motion
-   Only transform and opacity move, every entrance runs once, nothing loops, and
-   prefers-reduced-motion switches it all off (end of this file). Entrances use an ease-out cubic
-   curve, so the movement stays visible for most of its duration instead of finishing in the first
-   frames; hovers use the snappier --ease-out.
+   Only transform and opacity move. The hero carries most of the motion: a staged entrance, then a
+   slow idle float on the screenshots and decorations, plus the capability strip under it. Every
+   other section only enters once as it scrolls into view. prefers-reduced-motion switches it all
+   off (end of this file). Entrances use an ease-out cubic curve, so the movement stays visible for
+   most of its duration; hovers use the snappier --ease-out; idle loops use ease-in-out.
    --------------------------------------------------------------------------------------------- */
 :root {
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -222,19 +345,20 @@ html[lang="ar"] .btn-lg {
   --motion-base: 450ms;
   --motion-enter: 700ms;
   /* Entrance distances: hero text and screenshot, then sections as they scroll in. */
-  --hero-y: 28px;
+  --hero-y: 24px;
   --hero-x: 36px;
   --enter-y: 36px;
   --enter-x: 32px;
   /* +1 in left-to-right text and -1 in right-to-left, so sideways movement follows the reading direction. */
   --dir: 1;
   --inline-start: left;
+  --inline-end: right;
 }
 
 /* Phones travel a little less. */
 @media (max-width: 639px) {
   :root {
-    --hero-y: 22px;
+    --hero-y: 20px;
     --hero-x: 20px;
     --enter-y: 28px;
     --enter-x: 22px;
@@ -244,16 +368,26 @@ html[lang="ar"] .btn-lg {
 [dir="rtl"] {
   --dir: -1;
   --inline-start: right;
+  --inline-end: left;
 }
 
 [dir="ltr"] {
   --dir: 1;
   --inline-start: left;
+  --inline-end: right;
 }
 
-/* Page load: the hero text rises in line by line (delays are set in Hero.jsx) while the screenshot
-   slides in from the outer edge. Pure CSS, so it plays before and without JavaScript. Every entrance
-   is fully opaque before it has finished moving: text is readable early and keeps gliding into place. */
+/* Page load, pure CSS so it plays before and without JavaScript (delays are set in Navbar.jsx and
+   Hero.jsx): the bar settles, the text rises line by line, the browser screenshot slides in from the
+   outer edge, the phone follows from below, then the decorations fade in. Every entrance is fully
+   opaque before it has finished moving: text is readable early and keeps gliding into place. */
+@keyframes nav-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
 @keyframes hero-in {
   from {
     opacity: 0;
@@ -268,7 +402,7 @@ html[lang="ar"] .btn-lg {
 @keyframes hero-media-in {
   from {
     opacity: 0;
-    transform: translate3d(calc(var(--hero-x) * var(--dir)), 0, 0) scale(0.97);
+    transform: translate3d(calc(var(--hero-x) * var(--dir)), 12px, 0) scale(0.96);
   }
 
   40% {
@@ -276,14 +410,95 @@ html[lang="ar"] .btn-lg {
   }
 }
 
+@keyframes hero-phone-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0) scale(0.94);
+  }
+
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The coral underline under the highlighted words draws from the start of the reading direction. */
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.nav-in {
+  animation: nav-in 600ms var(--ease-enter) backwards;
+}
+
 .hero-in {
-  animation: hero-in 650ms var(--ease-enter) backwards;
+  animation: hero-in 700ms var(--ease-enter) backwards;
   animation-delay: var(--delay, 0ms);
 }
 
 .hero-media-in {
-  animation: hero-media-in 900ms var(--ease-enter) backwards;
+  animation: hero-media-in 950ms var(--ease-enter) backwards;
   animation-delay: var(--delay, 0ms);
+}
+
+.hero-phone-in {
+  animation: hero-phone-in 850ms var(--ease-enter) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+.hero-fade-in {
+  animation: fade-in 1000ms ease-out backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+.hero-underline {
+  transform-origin: var(--inline-start);
+  animation: draw 700ms var(--ease-out) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Idle motion after the entrance: a few pixels up and back, each piece on its own rhythm so they never
+   move in step. The ambient color shapes drift more slowly. */
+@keyframes float {
+  to {
+    transform: translate3d(0, calc(var(--float, 4px) * -1), 0);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate3d(calc(28px * var(--dir)), 18px, 0) scale(1.06);
+  }
+}
+
+.float {
+  animation: float var(--float-duration, 5s) ease-in-out var(--float-delay, 1.4s) infinite alternate both;
+}
+
+.drift {
+  animation: drift 16s ease-in-out infinite alternate both;
+}
+
+/* Capability strip: two copies of the list move by exactly one copy's width, in the reading direction. */
+@keyframes marquee {
+  to {
+    transform: translate3d(calc(-50% * var(--dir)), 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee 48s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
 /* Scroll entrances (see useReveal): elements below the fold are hidden once JavaScript runs, then
@@ -344,7 +559,7 @@ html[lang="ar"] .btn-lg {
     transform var(--motion-fast) var(--ease-out);
 }
 
-/* Desktop navigation: an underline that grows from the start of the reading direction. */
+/* Desktop navigation: a coral underline that grows from the start of the reading direction. */
 .nav-link {
   position: relative;
 }
@@ -354,9 +569,9 @@ html[lang="ar"] .btn-lg {
   position: absolute;
   inset-inline: 0.75rem;
   bottom: 0.35rem;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.5;
+  height: 2px;
+  border-radius: 1px;
+  background: rgb(var(--brand));
   transform: scaleX(0);
   transform-origin: var(--inline-start);
   transition: transform var(--motion-base) var(--ease-out);
@@ -369,26 +584,34 @@ html[lang="ar"] .btn-lg {
 
 /* Hover movement only where there is a real pointer and motion is welcome. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  /* Cards lift slightly and their border brightens; a service card's icon warms up. */
+  /* Cards lift slightly, their border darkens a touch and the shadow deepens. */
   .lift,
   .project {
     transition:
       transform var(--motion-hover) var(--ease-out),
-      border-color var(--motion-hover) var(--ease-out);
+      border-color var(--motion-hover) var(--ease-out),
+      background-color var(--motion-hover) var(--ease-out),
+      box-shadow var(--motion-hover) var(--ease-out);
   }
 
   .lift:hover,
   .project:hover {
     transform: translateY(-4px);
-    border-color: rgb(255 255 255 / 0.16);
+    border-color: rgb(var(--border-strong));
+    box-shadow: var(--shadow-card-hover);
   }
 
+  .lift.card-featured:hover {
+    border-color: rgb(var(--brand) / 0.45);
+  }
+
+
   .service-icon {
-    transition: background-color var(--motion-hover) var(--ease-out);
+    transition: transform var(--motion-hover) var(--ease-out);
   }
 
   .lift:hover .service-icon {
-    background-color: rgb(255 74 63 / 0.18);
+    transform: translateY(-2px) rotate(-4deg);
   }
 
   /* Project screenshots zoom in slightly inside their frames. */
@@ -400,17 +623,38 @@ html[lang="ar"] .btn-lg {
     transform: scale(1.02);
   }
 
-  /* The large contact buttons rise a little and glow. */
+  /* Buttons rise a little. */
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
   .btn-lg:hover {
     transform: translateY(-2px);
   }
 
-  .btn-whatsapp:hover {
-    box-shadow: 0 14px 30px -14px rgb(37 211 102 / 0.65);
+  .btn-primary:hover {
+    box-shadow: 0 14px 26px -14px rgb(var(--brand-fill) / 0.7);
   }
 
-  .btn-secondary.btn-lg:hover {
-    box-shadow: 0 14px 30px -18px rgb(255 255 255 / 0.3);
+  .btn-whatsapp:hover {
+    box-shadow: 0 14px 26px -14px rgb(var(--whatsapp) / 0.7);
+  }
+
+  .btn-secondary:hover {
+    box-shadow: var(--shadow-float);
+  }
+
+  /* The shape behind the portrait shifts a little when the portrait is hovered. */
+  .portrait-shape {
+    transition:
+      translate 600ms var(--ease-out),
+      rotate 600ms var(--ease-out);
+  }
+
+  /* Individual translate/rotate add to the shape's resting offset instead of replacing it. */
+  .portrait:hover .portrait-shape {
+    translate: calc(6px * var(--dir)) 6px;
+    rotate: calc(2deg * var(--dir));
   }
 
   /* Icons nudge the way they point. `translate` adds to the right-to-left flip instead of replacing it. */
@@ -437,7 +681,8 @@ html[lang="ar"] .btn-lg {
     transform: scale(0.97);
   }
 
-  /* Switching language loads the other page; supporting browsers cross-fade between the two. */
+  /* Without JavaScript the language links load the other page; supporting browsers cross-fade between
+     the two. (With JavaScript the switch happens in place, with the same fade; see useLocaleState.) */
   @view-transition {
     navigation: auto;
   }
@@ -450,7 +695,8 @@ html[lang="ar"] .btn-lg {
   }
 }
 
-/* Reduced motion: no entrances, reveals, hover movement or smooth scrolling; everything shows at once. */
+/* Reduced motion: no entrances, reveals, idle loops, hover movement or smooth scrolling; everything
+   shows at once and the capability strip stands still. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -466,8 +712,15 @@ html[lang="ar"] .btn-lg {
     animation-iteration-count: 1 !important;
   }
 
+  .nav-in,
   .hero-in,
   .hero-media-in,
+  .hero-phone-in,
+  .hero-fade-in,
+  .hero-underline,
+  .float,
+  .drift,
+  .marquee-track,
   .reveal-in {
     animation: none !important;
   }

@@ -2,22 +2,20 @@ import { StrictMode } from "react";
 import { renderToString } from "react-dom/server";
 
 import App from "./App";
-import ar from "./i18n/ar";
 import { defaultLocale, locales, localeStorageKey } from "./i18n/config";
-import en from "./i18n/en";
 import { renderHead } from "./i18n/head";
-
-const messages = { ar, en };
+import { loadMessages } from "./i18n/messages";
 
 // Used at build time by scripts/prerender.js to write one static page per language.
-export function render(locale) {
+export async function render(locale) {
+  const messages = await loadMessages(locale);
   return {
     html: renderToString(
       <StrictMode>
-        <App locale={locale} messages={messages[locale]} />
+        <App locale={locale} messages={messages} />
       </StrictMode>
     ),
-    head: renderHead(locale, messages[locale]),
+    head: renderHead(locale, messages),
   };
 }
 

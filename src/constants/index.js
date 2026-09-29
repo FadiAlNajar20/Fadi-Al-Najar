@@ -1,5 +1,5 @@
 // Contact details, links and project data that are the same in every language.
-// All visible text lives in the locale files: src/i18n/ar.js and src/i18n/en.js.
+// All visible text lives in the locale files: src/i18n/ar.json and src/i18n/en.json.
 
 export const siteUrl = "https://portfolio-umber-nine-67.vercel.app";
 

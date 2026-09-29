@@ -1,37 +1,30 @@
 import { useI18n } from "../i18n";
 import { locales, localeStorageKey } from "../i18n/config";
+import { loadMessages } from "../i18n/messages";
 
-// The section currently being read, so switching language keeps the visitor in the same place.
-const currentSectionHash = () => {
-  const line = window.innerHeight * 0.3;
-  let current = "";
-  for (const section of document.querySelectorAll("main section[id]")) {
-    if (section.getBoundingClientRect().top <= line) current = section.id;
-  }
-  return current && current !== "top" ? `#${current}` : "";
-};
-
-// Each language is its own pre-rendered page ("/" and "/en/"), so switching is a normal link that also
-// works without JavaScript. The choice is remembered so "/" can reopen the chosen language next time.
+// Each language also has its own pre-rendered page ("/" and "/en/"), so the switch is a real link that
+// works without JavaScript and for search engines. With JavaScript, a plain click switches the language
+// in place instead (no page load; see useLocaleState). The choice is remembered so "/" can reopen the
+// chosen language on a later visit.
 const LanguageSwitcher = () => {
-  const { locale, t } = useI18n();
+  const { locale, t, setLocale } = useI18n();
 
   const handleClick = (event, code) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     try {
       localStorage.setItem(localeStorageKey, code);
     } catch {
-      // Storage can be unavailable (private mode, blocked cookies); the link still works.
+      // Storage can be unavailable (private mode, blocked cookies); switching still works.
     }
     event.preventDefault();
-    window.location.assign(locales[code].path + currentSectionHash());
+    setLocale(code);
   };
 
   return (
     <div
       role="group"
       aria-label={t.nav.language}
-      className="flex h-10 shrink-0 items-center gap-0.5 rounded-lg border border-white/[0.12] p-[3px] text-sm font-semibold"
+      className="flex h-10 shrink-0 items-center gap-0.5 rounded-lg border border-line bg-white p-[3px] text-sm font-semibold"
     >
       {Object.values(locales).map(({ code, path, label }) =>
         code === locale ? (
@@ -39,7 +32,7 @@ const LanguageSwitcher = () => {
             key={code}
             lang={code}
             aria-current="true"
-            className="inline-flex h-full min-w-[2.625rem] items-center justify-center rounded-md bg-white/[0.12] px-2.5 text-white"
+            className="inline-flex h-full min-w-[2.625rem] items-center justify-center rounded-md bg-surface-muted px-2.5 text-fg ring-1 ring-inset ring-line"
           >
             {label}
           </span>
@@ -50,7 +43,10 @@ const LanguageSwitcher = () => {
             lang={code}
             hrefLang={code}
             onClick={(event) => handleClick(event, code)}
-            className="inline-flex h-full min-w-[2.625rem] items-center justify-center rounded-md px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+            // Starts fetching the other language's text as soon as the visitor heads for the link.
+            onPointerEnter={() => loadMessages(code)}
+            onFocus={() => loadMessages(code)}
+            className="inline-flex h-full min-w-[2.625rem] items-center justify-center rounded-md px-2.5 text-fg-secondary transition-colors hover:bg-surface-muted hover:text-fg"
           >
             {label}
           </a>

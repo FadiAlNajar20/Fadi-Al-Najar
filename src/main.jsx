@@ -2,19 +2,16 @@ import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
 import App from "./App";
-import { localeFromPath, locales } from "./i18n/config";
+import { localeFromPath } from "./i18n/config";
+import { loadMessages } from "./i18n/messages";
 import "./index.css";
 
-// Each page only downloads its own language's text.
-const loadMessages = {
-  ar: () => import("./i18n/ar.js"),
-  en: () => import("./i18n/en.js"),
-};
-
+// The URL decides the first language ("/" Arabic, "/en/" English); after that, switching language
+// happens inside the app without loading another page (see src/i18n/useLocaleState.js).
 const locale = localeFromPath(window.location.pathname);
 const container = document.getElementById("root");
 
-loadMessages[locale]().then(({ default: messages }) => {
+loadMessages(locale).then((messages) => {
   const app = (
     <StrictMode>
       <App locale={locale} messages={messages} />
@@ -22,14 +19,8 @@ loadMessages[locale]().then(({ default: messages }) => {
   );
 
   // Production builds ship pre-rendered HTML for each language (scripts/prerender.js), so hydrate it.
-  if (container.firstElementChild) {
-    hydrateRoot(container, app);
-    return;
-  }
-
-  // The dev server renders from scratch and always serves the Arabic template, so match it to the URL.
-  document.documentElement.lang = locale;
-  document.documentElement.dir = locales[locale].dir;
-  document.title = messages.meta.title;
-  createRoot(container).render(app);
+  // The dev server renders from scratch and always serves the Arabic template; App sets lang, dir and
+  // the head tags to match the URL.
+  if (container.firstElementChild) hydrateRoot(container, app);
+  else createRoot(container).render(app);
 });

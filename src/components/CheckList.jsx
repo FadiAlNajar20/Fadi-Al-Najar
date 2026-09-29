@@ -7,7 +7,7 @@ const CheckList = ({ items, className = "" }) => (
     {items.map((item) => (
       <li key={item} className="flex gap-3">
         <span className="flex h-[1lh] shrink-0 items-center">
-          <LuCheck className="h-4 w-4 text-brand" aria-hidden="true" />
+          <LuCheck className="h-4 w-4 text-accent" aria-hidden="true" />
         </span>
         <span>{item}</span>
       </li>

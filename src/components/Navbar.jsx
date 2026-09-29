@@ -51,16 +51,30 @@ const Navbar = () => {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
-        solid ? "border-white/[0.08] bg-ink-950/90 backdrop-blur-md" : "border-transparent"
+      className={`nav-in fixed inset-x-0 top-0 z-40 border-b transition-[background-color,border-color,box-shadow] duration-300 border-b-2 border-b-red-100 ${
+        solid
+          ? "border-line bg-white/90 shadow-[0_6px_24px_-18px_rgb(17_17_17/0.35)] backdrop-blur-md"
+          : "border-transparent bg-white/0"
       }`}
     >
       <nav aria-label={t.nav.label}>
-        <div className={`${styles.container} flex h-16 items-center justify-between gap-4 lg:gap-6`}>
-          <a href="#top" onClick={close} className="flex min-w-0 items-center gap-2.5 rounded-md">
-            <img src={logo} alt="" width="32" height="32" className="h-8 w-8 shrink-0" />
+        <div
+          className={`${styles.container} flex h-16 items-center justify-between gap-4 lg:gap-6`}
+        >
+          <a
+            href="#top"
+            onClick={close}
+            className="flex min-w-0 items-center gap-2.5 rounded-md"
+          >
+            <img
+              src={logo}
+              alt=""
+              width="32"
+              height="32"
+              className="h-8 w-8 shrink-0"
+            />
             {/* Visually hidden on the narrowest phones to make room for the language switcher. */}
-            <span className="sr-only whitespace-nowrap text-[0.95rem] font-semibold text-white min-[360px]:not-sr-only ltr:tracking-tight">
+            <span className="sr-only whitespace-nowrap text-[0.95rem] font-bold text-fg min-[360px]:not-sr-only ltr:tracking-tight">
               {t.common.name}
             </span>
           </a>
@@ -70,7 +84,7 @@ const Navbar = () => {
               <li key={id}>
                 <a
                   href={`#${id}`}
-                  className="nav-link rounded-md px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+                  className="nav-link rounded-md px-3 py-2 text-sm font-medium text-fg-body transition-colors hover:text-fg"
                 >
                   {t.nav.links[id]}
                 </a>
@@ -80,7 +94,10 @@ const Navbar = () => {
 
           <div className="flex items-center gap-2 lg:gap-3">
             <LanguageSwitcher />
-            <a href="#contact" className="btn btn-primary btn-sm hidden lg:inline-flex">
+            <a
+              href="#contact"
+              className="btn btn-primary btn-sm hidden lg:inline-flex"
+            >
               {t.nav.cta}
             </a>
             <button
@@ -90,9 +107,13 @@ const Navbar = () => {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
-              className="-me-2 inline-flex h-11 w-11 items-center justify-center rounded-lg text-white hover:bg-white/[0.06] md:hidden"
+              className="-me-2 inline-flex h-11 w-11 items-center justify-center rounded-lg text-fg hover:bg-fg/[0.06] md:hidden"
             >
-              {open ? <LuX className="h-6 w-6" aria-hidden="true" /> : <LuMenu className="h-6 w-6" aria-hidden="true" />}
+              {open ? (
+                <LuX className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <LuMenu className="h-6 w-6" aria-hidden="true" />
+              )}
             </button>
           </div>
         </div>
@@ -101,8 +122,10 @@ const Navbar = () => {
             it; it becomes visible immediately on open and hides only after the fade-out finishes. */}
         <div
           id="mobile-menu"
-          className={`absolute inset-x-0 top-full border-b border-white/[0.08] bg-ink-950 transition-[opacity,transform,visibility] duration-[300ms,300ms,0s] ease-[var(--ease-out)] md:hidden ${
-            open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-2 opacity-0 delay-[0s,0s,300ms]"
+          className={`absolute inset-x-0 top-full border-b border-line bg-white shadow-[0_18px_30px_-24px_rgb(17_17_17/0.3)] transition-[opacity,transform,visibility] duration-[300ms,300ms,0s] ease-[var(--ease-out)] md:hidden ${
+            open
+              ? "visible translate-y-0 opacity-100"
+              : "invisible -translate-y-2 opacity-0 delay-[0s,0s,300ms]"
           }`}
         >
           <ul className={`${styles.container} py-2`}>
@@ -111,7 +134,7 @@ const Navbar = () => {
                 <a
                   href={`#${id}`}
                   onClick={close}
-                  className="flex min-h-[48px] items-center rounded-md text-base font-medium text-zinc-200 hover:text-white"
+                  className="flex min-h-[48px] items-center rounded-md text-base font-medium text-fg-body hover:text-fg"
                 >
                   {t.nav.links[id]}
                 </a>
@@ -119,7 +142,11 @@ const Navbar = () => {
             ))}
           </ul>
           <div className={`${styles.container} pb-5`}>
-            <a href="#contact" onClick={close} className="btn btn-primary w-full">
+            <a
+              href="#contact"
+              onClick={close}
+              className="btn btn-primary w-full"
+            >
               {t.nav.cta}
             </a>
           </div>

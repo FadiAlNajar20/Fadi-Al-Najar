@@ -18,7 +18,7 @@ const { render, defaultLocale, locales, localeStorageKey } = await import(
   pathToFileURL(path.join(ssrDir, "entry-server.js")).href
 );
 
-// Preload the fonts each page needs straight away, and its language chunk (see src/main.jsx).
+// Preload the fonts each page needs straight away, and its language chunk (see src/i18n/messages.js).
 const assets = await fs.readdir(path.join(dist, "assets"));
 const asset = (pattern) => assets.find((file) => pattern.test(file));
 const latinFont = asset(/^plus-jakarta-sans-latin-wght-normal-.*\.woff2$/);
@@ -29,8 +29,8 @@ const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
 const preloadFont = (file) => `<link rel="preload" href="/assets/${file}" as="font" type="font/woff2" crossorigin />`;
 
 const preloads = (locale) => {
-  const chunk = manifest[`src/i18n/${locale}.js`]?.file;
-  if (!chunk) throw new Error(`No build chunk found for src/i18n/${locale}.js`);
+  const chunk = manifest[`src/i18n/${locale}.json`]?.file;
+  if (!chunk) throw new Error(`No build chunk found for src/i18n/${locale}.json`);
   return [
     locale === "ar" && arabicFont && preloadFont(arabicFont),
     latinFont && preloadFont(latinFont),
@@ -50,7 +50,7 @@ const rememberedLocaleRedirect = () => {
 };
 
 for (const [locale, { dir, path: localePath }] of Object.entries(locales)) {
-  const { html, head } = render(locale);
+  const { html, head } = await render(locale);
   const headTags = [...(locale === defaultLocale ? [rememberedLocaleRedirect()] : []), ...head, ...preloads(locale)];
   const page = template
     .replace(/<html[^>]*>/, `<html lang="${locale}" dir="${dir}">`)

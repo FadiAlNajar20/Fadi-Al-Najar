@@ -1,6 +1,7 @@
 import { createContext, Fragment, useContext } from "react";
 
-// Provides { locale, dir, t } to every component; `t` is the locale's messages (src/i18n/ar.js or en.js).
+// Provides { locale, dir, t, setLocale } to every component; `t` is the active language's messages
+// (src/i18n/ar.json or en.json) and setLocale switches language in place (see useLocaleState).
 const I18nContext = createContext(null);
 
 export const I18nProvider = I18nContext.Provider;

@@ -1,5 +1,6 @@
-// Builds the per-language <head> tags (title, description, canonical, hreflang, Open Graph, Twitter
-// and structured data). Only used at build time by the pre-renderer.
+// The per-language <head> tags (title, description, canonical, hreflang, Open Graph, Twitter and
+// structured data), built from `meta` in the locale files. The pre-renderer writes them into each page
+// (renderHead); after a client-side language switch, applyHead updates the live document to match.
 import { contact, siteUrl, stack } from "../constants";
 import { defaultLocale, locales } from "./config";
 
@@ -45,35 +46,76 @@ const structuredData = (locale, meta) => ({
   ],
 });
 
-export function renderHead(locale, { meta }) {
+const metaName = (name, content) => ({ tag: "meta", key: "name", attrs: { name, content } });
+const metaProperty = (property, content) => ({ tag: "meta", key: "property", attrs: { property, content } });
+
+// One entry per tag: `tag`, its attributes, text for <title>/<script>, and `key`, the attribute that
+// identifies the tag in the document (see applyHead).
+const headTags = (locale, { meta }) => {
   const url = pageUrl(locale);
   const image = `${siteUrl}${meta.ogImage}`;
   const alternates = Object.keys(locales).filter((code) => code !== locale);
-  // "<" is escaped so the JSON can never close the <script> element early.
-  const json = JSON.stringify(structuredData(locale, meta)).replace(/</g, "\\u003c");
 
   return [
-    `<title>${escapeHtml(meta.title)}</title>`,
-    `<meta name="description" content="${escapeHtml(meta.description)}" />`,
-    `<link rel="canonical" href="${url}" />`,
-    ...Object.keys(locales).map((code) => `<link rel="alternate" hreflang="${code}" href="${pageUrl(code)}" />`),
-    `<link rel="alternate" hreflang="x-default" href="${pageUrl(defaultLocale)}" />`,
-    `<meta property="og:type" content="website" />`,
-    `<meta property="og:site_name" content="${escapeHtml(meta.personName)}" />`,
-    `<meta property="og:locale" content="${locales[locale].ogLocale}" />`,
-    ...alternates.map((code) => `<meta property="og:locale:alternate" content="${locales[code].ogLocale}" />`),
-    `<meta property="og:url" content="${url}" />`,
-    `<meta property="og:title" content="${escapeHtml(meta.title)}" />`,
-    `<meta property="og:description" content="${escapeHtml(meta.ogDescription)}" />`,
-    `<meta property="og:image" content="${image}" />`,
-    `<meta property="og:image:width" content="1200" />`,
-    `<meta property="og:image:height" content="630" />`,
-    `<meta property="og:image:alt" content="${escapeHtml(meta.ogImageAlt)}" />`,
-    `<meta name="twitter:card" content="summary_large_image" />`,
-    `<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`,
-    `<meta name="twitter:description" content="${escapeHtml(meta.ogDescription)}" />`,
-    `<meta name="twitter:image" content="${image}" />`,
-    `<meta name="twitter:image:alt" content="${escapeHtml(meta.ogImageAlt)}" />`,
-    `<script type="application/ld+json">${json}</script>`,
+    { tag: "title", text: meta.title },
+    metaName("description", meta.description),
+    { tag: "link", key: "rel", attrs: { rel: "canonical", href: url } },
+    ...Object.keys(locales).map((code) => ({
+      tag: "link",
+      key: "hreflang",
+      attrs: { rel: "alternate", hreflang: code, href: pageUrl(code) },
+    })),
+    { tag: "link", key: "hreflang", attrs: { rel: "alternate", hreflang: "x-default", href: pageUrl(defaultLocale) } },
+    metaProperty("og:type", "website"),
+    metaProperty("og:site_name", meta.personName),
+    metaProperty("og:locale", locales[locale].ogLocale),
+    ...alternates.map((code) => metaProperty("og:locale:alternate", locales[code].ogLocale)),
+    metaProperty("og:url", url),
+    metaProperty("og:title", meta.title),
+    metaProperty("og:description", meta.ogDescription),
+    metaProperty("og:image", image),
+    metaProperty("og:image:width", "1200"),
+    metaProperty("og:image:height", "630"),
+    metaProperty("og:image:alt", meta.ogImageAlt),
+    metaName("twitter:card", "summary_large_image"),
+    metaName("twitter:title", meta.title),
+    metaName("twitter:description", meta.ogDescription),
+    metaName("twitter:image", image),
+    metaName("twitter:image:alt", meta.ogImageAlt),
+    { tag: "script", key: "type", attrs: { type: "application/ld+json" }, text: JSON.stringify(structuredData(locale, meta)) },
   ];
+};
+
+const toHtml = ({ tag, attrs = {}, text }) => {
+  const attributes = Object.entries(attrs)
+    .map(([name, value]) => ` ${name}="${escapeHtml(value)}"`)
+    .join("");
+  if (tag === "title") return `<title>${escapeHtml(text)}</title>`;
+  // "<" is escaped so the JSON can never close the <script> element early.
+  if (tag === "script") return `<script${attributes}>${text.replace(/</g, "\\u003c")}</script>`;
+  return `<${tag}${attributes} />`;
+};
+
+export function renderHead(locale, messages) {
+  return headTags(locale, messages).map(toHtml);
+}
+
+// Brings the live <head> in line with `locale`: tags with the same identity (for example
+// meta[property="og:title"]) are updated in place, and any that are missing (the dev server's plain
+// template) are added.
+export function applyHead(locale, messages) {
+  const { head } = document;
+  const used = new Set();
+
+  for (const { tag, key, attrs = {}, text } of headTags(locale, messages)) {
+    const selector = key ? `${tag}[${key}="${attrs[key]}"]` : tag;
+    let el = [...head.querySelectorAll(selector)].find((candidate) => !used.has(candidate));
+    if (!el) {
+      el = document.createElement(tag);
+      head.appendChild(el);
+    }
+    used.add(el);
+    Object.entries(attrs).forEach(([name, value]) => el.setAttribute(name, value));
+    if (text !== undefined) el.textContent = text;
+  }
 }

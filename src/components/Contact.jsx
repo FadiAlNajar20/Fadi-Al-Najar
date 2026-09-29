@@ -6,52 +6,62 @@ import useWhatsappLink from "../hooks/useWhatsappLink";
 import { useI18n } from "../i18n";
 import { styles } from "../styles";
 
-// Final call to action: WhatsApp first, email second. The number and address are also shown as plain
-// text so they can be copied.
+// Final call to action: a soft coral panel with the invitation on one side and a white action card on
+// the other (stacked on smaller screens). WhatsApp first, email second; the number and address are
+// also shown as plain text so they can be copied.
 const Contact = ({ projectType }) => {
   const { t } = useI18n();
   const whatsappHref = useWhatsappLink(projectType);
 
   return (
-    <section id="contact" aria-labelledby="contact-title" className={styles.section}>
+    <section id="contact" aria-labelledby="contact-title" className="pb-20 pt-4 sm:pb-24 lg:pb-28">
       <div className={styles.container}>
         <div
-          className={`${styles.card} relative px-6 py-14 text-center before:pointer-events-none before:absolute before:inset-x-10 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-brand/60 before:to-transparent sm:px-12 sm:py-20`}
+          className="relative isolate grid gap-10 overflow-hidden rounded-3xl border border-brand/20 bg-surface-tint px-6 py-12 shadow-card sm:px-10 sm:py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14 lg:px-14 lg:py-16"
           data-reveal="panel"
         >
-          {/* The panel enters first, then its heading, text, buttons and details in turn. */}
+          {/* Decoration: a thin coral line along the top, faint rings in the far corner, a dotted patch
+              near the start. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+            <span className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-brand/60 to-transparent" />
+            <span className="absolute -end-24 -top-28 hidden h-80 w-80 rounded-full border border-brand/15 lg:block" />
+            <span className="absolute -end-10 -top-14 hidden h-44 w-44 rounded-full border border-brand/15 lg:block" />
+            <span className="dot-grid absolute -bottom-8 -start-8 h-40 w-56 opacity-50 [mask-image:radial-gradient(closest-side,black,transparent)]" />
+          </div>
+
+          {/* The panel enters first, then the invitation and the action card in turn. */}
           <div data-reveal>
             <p className="eyebrow">{t.contact.eyebrow}</p>
-            <h2 id="contact-title" className="heading-2 heading-cta mx-auto mt-3 max-w-2xl">
+            <h2 id="contact-title" className="heading-2 heading-cta mt-5 max-w-xl">
               {t.contact.title}
             </h2>
-          </div>
-          <p className="text-lead mx-auto mt-5 max-w-xl" data-reveal>
-            {t.contact.lead}
-          </p>
-
-          <div className="mt-10 flex flex-col justify-center gap-3 xs:flex-row" data-reveal>
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-lg">
-              <FaWhatsapp className="h-5 w-5" aria-hidden="true" />
-              {t.contact.whatsappCta}
-              <span className="sr-only"> {t.common.newTab}</span>
-            </a>
-            <a href={`mailto:${contact.email}`} className="btn btn-secondary btn-lg">
-              <LuMail className="h-5 w-5" aria-hidden="true" />
-              {t.contact.emailCta}
-            </a>
+            <p className="text-lead mt-5 max-w-lg">{t.contact.lead}</p>
           </div>
 
-          <p
-            className="mt-6 flex flex-col items-center gap-1 text-sm text-zinc-400 xs:flex-row xs:justify-center xs:gap-3"
-            data-reveal
-          >
-            <span dir="ltr">{contact.whatsappDisplay}</span>
-            <span aria-hidden="true" className="hidden xs:inline">
-              ·
-            </span>
-            <span className="[overflow-wrap:anywhere]">{contact.email}</span>
-          </p>
+          <div className="rounded-2xl border border-line bg-surface p-5 shadow-float sm:p-7" data-reveal>
+            <div className="flex flex-col gap-3">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-lg w-full">
+                <FaWhatsapp className="h-5 w-5" aria-hidden="true" />
+                {t.contact.whatsappCta}
+                <span className="sr-only"> {t.common.newTab}</span>
+              </a>
+              <a href={`mailto:${contact.email}`} className="btn btn-secondary btn-lg w-full">
+                <LuMail className="h-5 w-5" aria-hidden="true" />
+                {t.contact.emailCta}
+              </a>
+            </div>
+
+            <ul className="mt-6 space-y-2.5 border-t border-line pt-5 text-sm font-medium text-fg-secondary">
+              <li className="flex items-center gap-2.5">
+                <FaWhatsapp className="h-4 w-4 shrink-0 text-whatsapp" aria-hidden="true" />
+                <span dir="ltr">{contact.whatsappDisplay}</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <LuMail className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                <span className="[overflow-wrap:anywhere]">{contact.email}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

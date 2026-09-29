@@ -14,18 +14,41 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      // Every color is defined once in index.css (:root) as RGB channels, so opacity modifiers work.
       colors: {
-        ink: {
-          950: "#0b0b0e",
-          900: "#111115",
-          850: "#16161b",
-          800: "#1c1c22",
-          700: "#2a2a32",
+        page: "rgb(var(--page) / <alpha-value>)",
+        surface: {
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          muted: "rgb(var(--surface-neutral) / <alpha-value>)",
+          warm: "rgb(var(--surface-warm) / <alpha-value>)",
+          cool: "rgb(var(--surface-cool) / <alpha-value>)",
+          green: "rgb(var(--surface-green) / <alpha-value>)",
+          tint: "rgb(var(--surface-tint) / <alpha-value>)",
+          soft: "rgb(var(--surface-soft) / <alpha-value>)",
+        },
+        fg: {
+          DEFAULT: "rgb(var(--text-primary) / <alpha-value>)",
+          body: "rgb(var(--text-body) / <alpha-value>)",
+          secondary: "rgb(var(--text-secondary) / <alpha-value>)",
+          muted: "rgb(var(--text-muted) / <alpha-value>)",
+        },
+        line: {
+          DEFAULT: "rgb(var(--border) / <alpha-value>)",
+          strong: "rgb(var(--border-strong) / <alpha-value>)",
         },
         brand: {
-          DEFAULT: "#ff4a3f",
-          hover: "#ff6a61",
-          ink: "#1a0604",
+          DEFAULT: "rgb(var(--brand) / <alpha-value>)",
+          hover: "rgb(var(--brand-hover) / <alpha-value>)",
+          soft: "rgb(var(--brand-soft) / <alpha-value>)",
+          fill: "rgb(var(--brand-fill) / <alpha-value>)",
+          "fill-hover": "rgb(var(--brand-fill-hover) / <alpha-value>)",
+        },
+        // Coral that is dark enough for text and focus rings on white and the soft surfaces.
+        accent: "rgb(var(--brand-text) / <alpha-value>)",
+        cool: "rgb(var(--cool) / <alpha-value>)",
+        whatsapp: {
+          DEFAULT: "rgb(var(--whatsapp) / <alpha-value>)",
+          hover: "rgb(var(--whatsapp-hover) / <alpha-value>)",
         },
       },
       fontFamily: {
@@ -37,7 +60,10 @@ module.exports = {
         xs: "450px",
       },
       boxShadow: {
-        frame: "0 24px 60px -24px rgba(0, 0, 0, 0.7)",
+        card: "var(--shadow-card)",
+        "card-hover": "var(--shadow-card-hover)",
+        frame: "var(--shadow-frame)",
+        float: "var(--shadow-float)",
       },
     },
   },
